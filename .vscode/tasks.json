@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "dotnet",
+			"task": "build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "dotnet: build"
+		},
+		{
+			"type": "dotnet",
+			"task": "watch ghibli-v2",
+			"file": "/home/kael/Documentos/Proyectos/net/ghibli-v2/ghibli-v2.csproj",
+			"problemMatcher": [],
+			"label": "dotnet: watch ghibli-v2"
+		}
+	]
+}

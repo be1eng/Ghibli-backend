@@ -1,0 +1,58 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Port=3306;Database=ghibli;User=ghibliUser;Password=Ghibli2024;
+      - ASPNETCORE_URLS=http://+:5071
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    ports:
+      - "5071:5071"
+    networks:
+      - ghibli_network
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_ghibli
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'ghibli'
+      MYSQL_USER: 'ghibliUser'
+      MYSQL_PASSWORD: 'Ghibli2024'
+      MYSQL_ROOT_PASSWORD: 'Ghibli12345'
+    ports:
+      - '3307:3306'
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
+      - ghibli_network
+
+  redis:
+    image: redis:latest
+    container_name: redis_ghibli
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - ghibli_network
+
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Port=3306;Database=ghibli;User=ghibliUser;Password=Ghibli2024;
+    depends_on:
+      - db
+    command: dotnet ef database update
+    networks:
+      - ghibli_network
+
+networks:
+  ghibli_network:
+    driver: bridge
